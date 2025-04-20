@@ -1,0 +1,5 @@
+{{define "content"}}
+<h2>{{.Product.GetString "name" }}</h2>
+<p>{{.Product.GetString "description"}}</p>
+<p>Price: ${{.Product.GetFloat "price"}}</p>
+{{end}}

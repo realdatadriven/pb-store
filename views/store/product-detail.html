@@ -1,0 +1,47 @@
+{{ define "content" }}
+<div class="breadcrumbs text-sm">
+    <ul>
+        <li><a href="/store">Store</a></li>
+        <li><a href="/store/products">Products</a></li>
+        <li>{{.id}}</li>
+    </ul>
+</div>
+<div class="max-w-5xl mx-auto p-6">
+    <div class="flex flex-col md:flex-row bg-base-100 shadow-sm rounded-box overflow-hidden">
+
+        <!-- Image -->
+        <div class="md:w-1/2">
+            <figure class="w-full h-full">
+                <img src="https://placehold.co/600x800" alt="Product Image" class="object-cover w-full h-full" />
+            </figure>
+        </div>
+
+        <!-- Product Info -->
+        <div class="md:w-1/2 p-6 flex flex-col gap-4">
+            <h2 class="text-3xl font-bold">A0 DuckDB Poster {{ .id }}</h2>
+            <p class="text-base-content/70">
+                A beautiful high-quality A0-sized DuckDB poster to decorate your workspace and express your love for SQL
+                and databases.
+            </p>
+
+            <div class="text-xl font-semibold">$14.99</div>
+
+            <!-- Quantity -->
+            <div class="form-control w-28">
+                <label class="label">
+                    <span class="label-text">Quantity</span>
+                </label>
+                <input type="number" min="1" value="1" class="input input-bordered input-sm w-full" />
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                <button class="btn btn-primary">Add to Cart</button>
+                <button class="btn btn-outline">Checkout</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{{ end }}
+{{ template "store" . }}
