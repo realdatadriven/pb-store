@@ -1,0 +1,6 @@
+*tmp*
+pb_data
+*.exe
+build-errors.log
+main.exe
+build*

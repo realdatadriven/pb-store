@@ -1,0 +1,38 @@
+{{ define "content" }}
+<!-- alert -->
+<div class="alert alert-success text-xs">
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class="h-5 w-5 shrink-0 stroke-current"
+		fill="none"
+		viewBox="0 0 24 24">
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+	</svg>
+	<span>Recovery email sent successfully</span>
+</div>
+<!-- /alert -->
+<!-- email -->
+<div class="form-control">
+	<label class="label" for="input1"><span class="label-text">Email</span></label>
+	<input
+		type="email"
+		placeholder="email"
+		class="input input-bordered [&:user-invalid]:input-warning [&:user-valid]:input-success"
+		required
+		id="input1" />
+</div>
+<!-- /email -->
+<!-- submit -->
+<button class="btn btn-neutral" type="submit">Recover</button>
+<!-- /submit -->
+<!-- login link -->
+<div class="label justify-end">
+	<a class="link-hover link label-text-alt" href="/auth/login">Login</a>
+</div>
+<!-- /login link -->
+{{ end }}
+{{ template "auth" . }}
