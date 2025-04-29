@@ -12,18 +12,20 @@
 			stroke-width="2"
 			d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 	</svg>
-	<span>Recovery email sent successfully</span>
+	<span id="status">Recovery email sent successfully</span>
 </div>
 <!-- /alert -->
 <!-- email -->
 <div class="form-control">
-	<label class="label" for="input1"><span class="label-text">Email</span></label>
+	<label class="label" for="input1">
+		<span class="label-text">Email</span>
+	</label>
 	<input
 		type="email"
 		placeholder="email"
 		class="input input-bordered [&:user-invalid]:input-warning [&:user-valid]:input-success"
 		required
-		id="input1" />
+		id="email" />
 </div>
 <!-- /email -->
 <!-- submit -->
@@ -34,5 +36,41 @@
 	<a class="link-hover link label-text-alt" href="/auth/login">Login</a>
 </div>
 <!-- /login link -->
+<script type="module">
+    import PocketBase from 'https://cdn.jsdelivr.net/npm/pocketbase/+esm';
+    const pb = new PocketBase(location.origin);  // or replace with API URL
+    const form = document.getElementById('auth-form');
+    const status = document.getElementById('status');
+    form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const email = document.getElementById('email').value;
+		try {
+			await pb.collection('users').requestPasswordReset(email);
+			status.textContent = 'A reset link has been sent to your email.';
+		} catch (err) {
+			console.error(err);
+			status.textContent = 'Failed to send reset link: ' + err.message;
+		}
+    });
+</script>
+<!--<script type="module">
+    import PocketBase from 'https://cdn.jsdelivr.net/npm/pocketbase/+esm';
+    const pb = new PocketBase(location.origin);  // or hardcode API URL if needed
+    const form = document.getElementById('reset-form');
+    const status = document.getElementById('status');
+    const token = new URLSearchParams(window.location.search).get("token");
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      const passwordConfirm = document.getElementById('passwordConfirm').value;
+      try {
+        await pb.collection('users').confirmPasswordReset(token, password, passwordConfirm);
+        status.textContent = 'Password reset successful! You can now log in.';
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Failed to reset password: ' + err.message;
+      }
+    });
+</script>-->
 {{ end }}
 {{ template "auth" . }}

@@ -19,7 +19,6 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/jsvm"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
-	"github.com/pocketbase/pocketbase/tools/hook"
 )
 
 //go:embed templates/*.html
@@ -38,6 +37,17 @@ func renderTemplate(name string, files []string, data map[string]any) (string, e
 	//fmt.Println(buf.String())
 	return buf.String(), nil
 }
+
+/*func AuthMiddleware(e *core.RequestEvent) *core.RequestEvent {
+	return func(e *core.RequestEvent) error {
+		cookie, err := e.Request.Cookie("session")
+		if err != nil || cookie.Value != "authenticated" {
+			http.Redirect(e.Response, e.Request, "/login", http.StatusSeeOther)
+			return nil
+		}
+		return e.Next()
+	}
+}*/
 
 var templates = template.Must(template.ParseFS(templatesFS, "templates/*.html"))
 
@@ -136,6 +146,27 @@ func main() {
 	// static route to serves files from the provided public dir
 	// (if publicDir exists and the route path is not already defined)
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
+
+		// register a global middleware that takes token from the cookie case its a SSR router request and set the header
+		// this only check if the incoming request has a valid session token, if so it set the necessarie headers for the PB
+		// pocketbase wasnt initially design for SSR, bu i wanted to try that
+		se.Router.BindFunc(func(e *core.RequestEvent) error {
+			token, err := getUserToken(e)
+			if err != nil {
+				fmt.Println("global middleware check session", err)
+			}
+			usr, err := app.FindAuthRecordByToken(token)
+			if err != nil {
+				fmt.Println("global middleware check session", err)
+			} else {
+				e.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+				fmt.Println(usr, token)
+			}
+			return e.Next()
+		})
+
+		// Compresses the HTTP response using Gzip compression scheme.
+		se.Router.Bind(apis.Gzip())
 		// serves static files from the provided public dir (if exists)
 		se.Router.GET("/public/{path...}", apis.Static(os.DirFS("./pb_public"), false))
 		se.Router.GET("/static/{path...}", apis.Static(os.DirFS("./pb_public"), false))
@@ -184,7 +215,7 @@ func main() {
 
 		se.Router.POST("/auth/{_type}", func(e *core.RequestEvent) error {
 			_type := e.Request.PathValue("_type")
-			fmt.Println(_type)
+			//fmt.Println(_type)
 			tmplData := map[string]any{"Title": "Login"}
 			if _type == "" || _type == "login" {
 				_type = "login"
@@ -195,26 +226,43 @@ func main() {
 				if err != nil {
 					fmt.Printf("%s", err)
 					tmplData = map[string]any{
-						"Title": "Login",
-						"msg":   "User or password incorrect!",
+						"Title":    "Login",
+						"msg":      "User or password incorrect!",
+						"msg_type": "error",
 					}
 				}
+				//record.NewVerificationToken()
 				if record.ValidatePassword(password) {
 					token, err := record.NewAuthToken()
+					/*/validate, err := app.FindAuthRecordByToken(token)
+					if err != nil {
+						return err
+					} else {
+						e.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+					}*/
+
 					if err != nil {
 						fmt.Printf("%s", err)
 						tmplData = map[string]any{
-							"Title": "Login",
-							"msg":   "User or password incorrect!",
+							"Title":    "Login",
+							"msg":      "User or password incorrect!",
+							"msg_type": "error",
 						}
 					} else {
-						fmt.Println(record, token)
-						_val, _ := json.Marshal(map[string]any{"token": token, "record": record})
+						//fmt.Println(record, token)
+						//_val, _ := json.MarshalIndent(map[string]any{"token": token, "record": record}, "", "")
+						//fmt.Println(string(_val))
 						http.SetCookie(e.Response, &http.Cookie{
-							Name:  "session",
-							Value: string(_val),
+							Name: "session",
+							//Value: string(_val),
+							Value: token,
 							Path:  "/",
 						})
+						tmplData = map[string]any{
+							"Title":    "Login",
+							"msg":      "Login successful!",
+							"msg_type": "success",
+						}
 						//http.Redirect(e.Response, e.Request, "/", http.StatusSeeOther)
 					}
 				} else {
@@ -234,6 +282,19 @@ func main() {
 				*/
 			} else if _type == "recovery" {
 				tmplData = map[string]any{"Title": "Recover Password"}
+				email := e.Request.FormValue("email")
+				// fmt.Println(email, password)
+				record, err := app.FindAuthRecordByEmail("users", email)
+				if err != nil {
+					fmt.Printf("%s", err)
+					tmplData = map[string]any{
+						"Title":    "Login",
+						"msg":      fmt.Sprintf("%s does not have a valida account", email),
+						"msg_type": "error",
+					}
+				} else {
+					fmt.Println(record.NewPasswordResetToken())
+				}
 			} else if _type == "signup" {
 				tmplData = map[string]any{"Title": "Signup"}
 			}
@@ -248,9 +309,8 @@ func main() {
 			return e.HTML(http.StatusOK, html)
 		})
 
-		se.Router.GET("/product/:slug", func(e *core.RequestEvent) error {
+		se.Router.GET("/product/{slug}", func(e *core.RequestEvent) error {
 			slug := e.Request.PathValue("slug")
-			//db := app.Dao()
 			records, err := app.FindRecordsByFilter(
 				"products",
 				"slug = {:slug}",
@@ -289,22 +349,67 @@ func main() {
 
 		se.Router.GET("/register", func(e *core.RequestEvent) error {
 			return templates.ExecuteTemplate(e.Response, "register.html", nil)
+		}).BindFunc(func(e *core.RequestEvent) error {
+			token, err := getUserToken(e)
+			if err != nil {
+				fmt.Println(err)
+				return err
+			}
+			usr, err := app.FindAuthRecordByToken(token)
+			if err != nil {
+				return err
+			} else {
+				e.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+				fmt.Println(usr)
+			}
+			return e.Next()
 		})
 		return se.Next()
 	})
-	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
+	/*app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Func: func(se *core.ServeEvent) error {
 			if !se.Router.HasRoute(http.MethodGet, "/{path...}") {
-				//se.Router.GET("/{path...}", apis.Static(os.DirFS(publicDir), indexFallback))
+				se.Router.GET("/{path...}", apis.Static(os.DirFS(publicDir), indexFallback))
 			}
 			return se.Next()
 		},
 		Priority: 999, // execute as latest as possible to allow users to provide their own route
-	})
+	})*/
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func getUserToken(e *core.RequestEvent) (string, error) {
+	cookie, err := e.Request.Cookie("session")
+	if err != nil {
+		return "", fmt.Errorf("err getting the session: %s", err)
+	}
+	return cookie.Value, nil
+}
+
+func _getUserToken(e *core.RequestEvent) (map[string]any, string, error) {
+	cookie, err := e.Request.Cookie("session")
+	if err != nil {
+		return nil, "", fmt.Errorf("err getting the session: %s", err)
+	}
+	fmt.Printf("1: %T, %v", cookie.Value, cookie.Value)
+	var usr_token map[string]any
+	err = json.Unmarshal([]byte(cookie.Value), &usr_token)
+	if err != nil {
+		return nil, "", fmt.Errorf("err converting cookie json to map: %s", err)
+	}
+	fmt.Printf("2: %T, %v", usr_token, usr_token)
+	usr, ok := usr_token["record"].(map[string]any)
+	if !ok {
+		return nil, "", fmt.Errorf("unable to get user from the cookie data")
+	}
+	token, ok := usr_token["token"].(string)
+	if !ok {
+		return nil, "", fmt.Errorf("unable to get token from the cookie data")
+	}
+	return usr, token, nil
 }
 
 // the default pb_public dir location is relative to the executable
