@@ -21,6 +21,20 @@
 {{ else }}
 	<p>{{.msg}}</p>
 {{ end }}
+<div class="alert alert-success text-xs" style="display: none;" id="status-conteiner">
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class="h-5 w-5 shrink-0 stroke-current"
+		fill="none"
+		viewBox="0 0 24 24">
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+	</svg>
+	<span id="status">Recovery email sent successfully</span>
+</div>
 <!-- email -->
 <div class="form-control">
 	<label class="label" for="input1"><span class="label-text">Email</span></label>
@@ -61,7 +75,7 @@
 <button class="btn btn-neutral" type="submit">Login</button>
 <!-- /submit -->
 <!-- login with google -->
-<button type="button" class="btn">
+<button type="button" class="btn" id="google-login-btn">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -89,5 +103,32 @@
 	<a class="link-hover link label-text-alt" href="/auth/signup">Create new account</a>
 </div>
 <!-- /signup -->
+<script type="module">
+	//needs to enable outh 2 in user colections, and add goolge and go to the https://console.cloud.google.com/apis/credentials to get the credntial
+	import PocketBase from '/public/js/pocketbase.es.mjs';  
+	const pb = new PocketBase(location.origin);
+	const status_conteiner = document.getElementById('status-conteiner');
+	const googleBtn = document.getElementById('google-login-btn');  
+	googleBtn.addEventListener('click', async (e) => {
+		console.log(e);
+		e.preventDefault();
+		try {
+			// Open the OAuth2 login popup
+			const authData = await pb.collection('users').authWithOAuth2({ provider: 'google' });	
+			status_conteiner.textContent = `Welcome, ${authData.record.email}!`;
+			status_conteiner.style.display = 'block';	
+			console.log(pb.authStore.isValid);
+			console.log(pb.authStore.token);
+			console.log(pb.authStore.record.id);
+			document.cookie = `session=${pb.authStore.token}; path=/; max-age=3600; secure; samesite=strict`;
+			// Optional: redirect or reload
+			// window.location.href = "/dashboard";
+		} catch (err) {
+			console.error(err);
+			status_conteiner.textContent = 'Login failed: ' + err.message;
+			status_conteiner.style.display = 'block';
+		}
+	});
+  </script>
 {{ end }}
 {{ template "auth" . }}

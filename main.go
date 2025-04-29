@@ -155,12 +155,13 @@ func main() {
 			if err != nil {
 				fmt.Println("global middleware check session", err)
 			}
-			usr, err := app.FindAuthRecordByToken(token)
+			_, err = app.FindAuthRecordByToken(token)
 			if err != nil {
 				fmt.Println("global middleware check session", err)
 			} else {
-				e.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
-				fmt.Println(usr, token)
+				//e.Request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+				e.Request.Header.Set("Authorization", fmt.Sprintf("%s", token))
+				//fmt.Println(usr, token)
 			}
 			return e.Next()
 		})
@@ -297,6 +298,32 @@ func main() {
 				}
 			} else if _type == "signup" {
 				tmplData = map[string]any{"Title": "Signup"}
+				username := e.Request.FormValue("username")
+				email := e.Request.FormValue("email")
+				password := e.Request.FormValue("password")
+				// fmt.Println(email, password)
+				_, err := app.FindAuthRecordByEmail("users", email)
+				if err == nil {
+					tmplData = map[string]any{
+						"Title":    "Signup",
+						"msg":      fmt.Sprintf("Email %s alread taken!", email),
+						"msg_type": "error",
+					}
+				} else {
+					collection, err := app.FindCollectionByNameOrId("users")
+					if err != nil {
+						tmplData = map[string]any{
+							"Title":    "Signup",
+							"msg":      fmt.Sprintf("%s", err),
+							"msg_type": "error",
+						}
+					} else {
+						record := core.NewRecord(collection)
+						record.Set("email", email)
+						record.Set("name", username)
+						record.SetPassword(password)
+					}
+				}
 			}
 			fmt.Println(fmt.Sprintf("templates/auth/%s.html", _type))
 			html, err := renderTemplate("auth", []string{

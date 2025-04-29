@@ -1,6 +1,6 @@
 {{ define "content" }}
 <!-- alert -->
-<div class="alert alert-success text-xs">
+<div class="alert alert-success text-xs" style="display: none;" id="status-conteiner">
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		class="h-5 w-5 shrink-0 stroke-current"
@@ -37,17 +37,21 @@
 </div>
 <!-- /login link -->
 <script type="module">
-    import PocketBase from 'https://cdn.jsdelivr.net/npm/pocketbase/+esm';
+    //import PocketBase from 'https://cdn.jsdelivr.net/npm/pocketbase/+esm';
+	import PocketBase from '/public/js/pocketbase.es.mjs'
     const pb = new PocketBase(location.origin);  // or replace with API URL
     const form = document.getElementById('auth-form');
+    const status_conteiner = document.getElementById('status-conteiner');
     const status = document.getElementById('status');
     form.addEventListener('submit', async (e) => {
 		e.preventDefault();
 		const email = document.getElementById('email').value;
 		try {
+			status_conteiner.style.display = 'block';
 			await pb.collection('users').requestPasswordReset(email);
 			status.textContent = 'A reset link has been sent to your email.';
 		} catch (err) {
+			status_conteiner.style.display = null;
 			console.error(err);
 			status.textContent = 'Failed to send reset link: ' + err.message;
 		}

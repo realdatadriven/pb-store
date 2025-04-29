@@ -1,37 +1,62 @@
 {{ define "content" }}
+{{ if eq .msg_type "success" }}
+<div class="alert alert-success text-xs">
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		class="h-5 w-5 shrink-0 stroke-current"
+		fill="none"
+		viewBox="0 0 24 24">
+		<path
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			stroke-width="2"
+			d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+	</svg>
+	<span>{{.msg}}</span>
+</div>
+{{else if eq .msg_type "error" }}
+<div class="form-control">
+	<span class="alert alert-sm alert-error">{{.msg}}</p>
+</div>
+{{ else }}
+	<p>{{.msg}}</p>
+{{ end }}
 <!-- name -->
 <div class="form-control">
-	<label class="label" for="input1"><span class="label-text">Name</span></label>
+	<label class="label" for="username"><span class="label-text">Name</span></label>
 	<input
 		type="text"
+		name="username"
 		placeholder="name"
 		class="input input-bordered [&:user-invalid]:input-warning [&:user-valid]:input-success"
 		pattern="^[a-zA-Z0-9_.-]*$"
 		minlength="1"
 		required
-		id="input1" />
+		id="username" />
 </div>
 <!-- /name -->
 <!-- email -->
 <div class="form-control">
-	<label class="label" for="input1"><span class="label-text">Email</span></label>
+	<label class="label" for="email"><span class="label-text">Email</span></label>
 	<input
 		type="email"
+		name="email"
 		placeholder="email"
 		class="input input-bordered [&:user-invalid]:input-warning [&:user-valid]:input-success"
 		required
-		id="input1" />
+		id="email" />
 </div>
 <!-- password -->
 <div class="form-control">
-	<label class="label" for="input2"><span class="label-text">Password</span></label>
+	<label class="label" for="password"><span class="label-text">Password</span></label>
 	<input
 		type="password"
+		name="password"
 		placeholder="password"
 		class="input input-bordered [&:user-invalid]:input-warning [&:user-valid]:input-success"
 		required
 		minlength="6"
-		for="input2" />
+		id="password" />
 </div>
 <!-- /password -->
 <!-- submit -->
