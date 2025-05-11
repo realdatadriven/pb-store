@@ -4,3 +4,8 @@ pb_data*
 build-errors.log
 main.exe
 build*
+.env
+pb_data/auxiliary.db
+doc.json
+pb_data/auxiliary.db
+pb_data/data.db

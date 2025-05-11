@@ -4,8 +4,9 @@ go 1.24.2
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/joho/godotenv v1.5.1
 	github.com/pocketbase/dbx v1.11.0
-	github.com/pocketbase/pocketbase v0.27.0
+	github.com/pocketbase/pocketbase v0.27.2
 )
 
 require (

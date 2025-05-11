@@ -19,6 +19,10 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/plugins/jsvm"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+
+	"github.com/joho/godotenv"
+
+	_ "litestore/migrations"
 )
 
 //go:embed templates/*.html
@@ -52,6 +56,13 @@ func renderTemplate(name string, files []string, data map[string]any) (string, e
 var templates = template.Must(template.ParseFS(templatesFS, "templates/*.html"))
 
 func main() {
+
+	// Load .env file
+	_err := godotenv.Load()
+	if _err != nil {
+		fmt.Print("Error loading .env file")
+	}
+
 	app := pocketbase.New()
 
 	// ---------------------------------------------------------------
@@ -322,10 +333,24 @@ func main() {
 						record.Set("email", email)
 						record.Set("name", username)
 						record.SetPassword(password)
+						err = app.Save(record)
+						if err != nil {
+							tmplData = map[string]any{
+								"Title":    "Signup",
+								"msg":      fmt.Sprintf("%s", err),
+								"msg_type": "error",
+							}
+						} else {
+							tmplData = map[string]any{
+								"Title":    "Signup",
+								"msg":      "Signup successfull",
+								"msg_type": "success",
+							}
+						}
 					}
 				}
 			}
-			fmt.Println(fmt.Sprintf("templates/auth/%s.html", _type))
+			//fmt.Println(fmt.Sprintf("templates/auth/%s.html", _type))
 			html, err := renderTemplate("auth", []string{
 				fmt.Sprintf("templates/auth/%s.html", _type),
 				"templates/auth/layout.html",
