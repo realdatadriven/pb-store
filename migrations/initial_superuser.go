@@ -9,6 +9,7 @@ import (
 
 func init() {
 	if env.GetString("PB_SU_EMAIL", "") != "" && env.GetString("PB_SU_PASS", "") != "" {
+		println(env.GetString("PB_SU_EMAIL", ""), env.GetString("PB_SU_PASS", ""))
 		m.Register(func(app core.App) error {
 			superusers, err := app.FindCollectionByNameOrId(core.CollectionNameSuperusers)
 			if err != nil {

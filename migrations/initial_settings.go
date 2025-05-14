@@ -27,7 +27,7 @@ func init() {
 		settings.SMTP.Port = env.GetInt("PB_SMTP_PORT", 587)
 		settings.SMTP.Username = env.GetString("PB_SMTP_USER", "")
 		settings.SMTP.Password = env.GetString("PB_SMTP_PASS", "")
-		settings.SMTP.LocalName = env.GetString("PB_SMTP_LOCAL_NAME", "")
+		//settings.SMTP.LocalName = env.GetString("PB_SMTP_LOCAL_NAME", "")
 
 		// BACKUPS
 		settings.Backups.Cron = env.GetString("PB_BACKUPS_CRON", "0 0 * * *")
