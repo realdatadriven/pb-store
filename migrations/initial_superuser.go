@@ -8,9 +8,9 @@ import (
 )
 
 func init() {
-	if env.GetString("PB_SU_EMAIL", "") != "" && env.GetString("PB_SU_PASS", "") != "" {
-		println(env.GetString("PB_SU_EMAIL", ""), env.GetString("PB_SU_PASS", ""))
-		m.Register(func(app core.App) error {
+	m.Register(func(app core.App) error {
+		if env.GetString("PB_SU_EMAIL", "") != "" && env.GetString("PB_SU_PASS", "") != "" {
+			println(env.GetString("PB_SU_EMAIL", ""), env.GetString("PB_SU_PASS", ""))
 			superusers, err := app.FindCollectionByNameOrId(core.CollectionNameSuperusers)
 			if err != nil {
 				return err
@@ -19,6 +19,7 @@ func init() {
 			record.Set("email", env.GetString("PB_SU_EMAIL", ""))
 			record.Set("password", env.GetString("PB_SU_PASS", ""))
 			return app.Save(record)
-		}, nil)
-	}
+		}
+		return nil
+	}, nil)
 }

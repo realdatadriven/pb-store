@@ -23,6 +23,7 @@ import (
 	"github.com/joho/godotenv"
 
 	_ "litestore/migrations"
+	"litestore/routes"
 )
 
 //go:embed templates/*.html
@@ -161,7 +162,8 @@ func main() {
 		// register a global middleware that takes token from the cookie case its a SSR router request and set the header
 		// this only check if the incoming request has a valid session token, if so it set the necessarie headers for the PB
 		// pocketbase wasnt initially design for SSR, bu i wanted to try that
-		se.Router.BindFunc(func(e *core.RequestEvent) error {
+		routes.SSRAuthorizationFromSession(app, se)
+		/*se.Router.BindFunc(func(e *core.RequestEvent) error {
 			token, err := getUserToken(e)
 			if err != nil {
 				fmt.Println("global middleware check session", err)
@@ -175,7 +177,7 @@ func main() {
 				//fmt.Println(usr, token)
 			}
 			return e.Next()
-		})
+		})*/
 
 		// Compresses the HTTP response using Gzip compression scheme.
 		se.Router.Bind(apis.Gzip())
