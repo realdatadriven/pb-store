@@ -418,6 +418,8 @@ func main() {
 			}
 			return e.Next()
 		})
+		// STORES
+		routes.Stores(app, se)
 		return se.Next()
 	})
 	/*app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
