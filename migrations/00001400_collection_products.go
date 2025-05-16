@@ -67,7 +67,7 @@ func init() {
 			&core.TextField{Name: "originCountry"},
 			&core.TextField{Name: "weightUnit"},
 			&core.TextField{Name: "dimensionUnit"},
-			&core.TextField{Name: "collectionId"},
+			&core.TextField{Name: "collectionId_"},
 			&core.TextField{Name: "styleCode"},
 			&core.BoolField{Name: "isCustomizable"},
 			&core.RelationField{Name: "vendorId", CollectionId: vendorsCol.Id},

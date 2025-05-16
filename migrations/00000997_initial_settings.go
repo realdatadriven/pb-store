@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"litestore/internals/env"
+	"github.com/realdatadriven/pocket_store/internals/env"
 
 	"github.com/pocketbase/pocketbase/core"
 	m "github.com/pocketbase/pocketbase/migrations"

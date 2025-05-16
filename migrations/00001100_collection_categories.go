@@ -16,6 +16,7 @@ func init() {
 		if err != nil {
 			categoriesCol = core.NewBaseCollection("categories")
 		}
+		println("categories Id:", categoriesCol.Id)
 		categoriesCol.ListRule = types.Pointer("")
 		categoriesCol.ViewRule = types.Pointer("")
 		categoriesCol.Fields.Add(
@@ -34,7 +35,8 @@ func init() {
 			&core.TextField{Name: "metaKeywords"},
 			&core.TextField{Name: "metaTitle"},
 			&core.TextField{Name: "name", Required: true},
-			&core.RelationField{Name: "parentCategoryId", CollectionId: categoriesCol.Id},
+			&core.TextField{Name: "parentCategoryId"},
+			//&core.RelationField{Name: "parentCategoryId", CollectionId: categoriesCol.Id},
 			&core.TextField{Name: "store"},
 			&core.TextField{Name: "slug"},
 			&core.NumberField{Name: "activeProducts", Min: types.Pointer[float64](-2147483648), Max: types.Pointer[float64](2147483647)},

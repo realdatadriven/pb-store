@@ -22,8 +22,8 @@ import (
 
 	"github.com/joho/godotenv"
 
-	_ "litestore/migrations"
-	"litestore/routes"
+	_ "github.com/realdatadriven/pocket_store/migrations"
+	"github.com/realdatadriven/pocket_store/routes"
 )
 
 //go:embed templates/*.html
