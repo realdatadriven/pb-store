@@ -32,7 +32,13 @@ func Products(app *pocketbase.PocketBase, se *core.ServeEvent) *router.Route[*co
 		if err != nil {
 			return e.NotFoundError("Missing or invalid slug", err)
 		}
-		return e.JSON(http.StatusOK, records)
+		response := map[string]any{
+			"pageSize": limit,
+			"page":     offset,
+			"count":    len(records),
+			"data":     records,
+		}
+		return e.JSON(http.StatusOK, response)
 	})
 }
 
