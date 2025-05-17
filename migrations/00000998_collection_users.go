@@ -32,6 +32,22 @@ func init() {
 				},
 			)
 		}
+		timeDiffField := usersCol.Fields.GetByName("timeDiff")
+		if timeDiffField == nil {
+			usersCol.Fields.Add(
+				&core.NumberField{
+					Name: "timeDiff",
+				},
+			)
+		}
+		phoneField := usersCol.Fields.GetByName("phone")
+		if phoneField == nil {
+			usersCol.Fields.Add(
+				&core.TextField{
+					Name: "phone",
+				},
+			)
+		}
 		// Check if the role field already exists
 		roleField := usersCol.Fields.GetByName("role")
 		if roleField == nil {

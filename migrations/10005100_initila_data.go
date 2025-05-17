@@ -75,6 +75,7 @@ func init() {
 			} else {
 				category = core.NewRecord(collection)
 				category.Set("name", env.GetString("PB_INIT_CATEGORY", "test"))
+				category.Set("isActive", true)
 				category.Set("storeId", store.Id)
 				category.Set("userId", user.Id)
 				err = app.Save(category)

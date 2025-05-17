@@ -3,6 +3,7 @@ package routes
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -13,6 +14,16 @@ import (
 func Products(app *pocketbase.PocketBase, se *core.ServeEvent) *router.Route[*core.RequestEvent] {
 	return se.Router.GET("/api/products", func(e *core.RequestEvent) error {
 		info, err := e.RequestInfo()
+		sort := info.Query["sort"]
+		page, err := strconv.Atoi(info.Query["page"])
+		if err != nil {
+			page = 1
+		}
+		perPage, err := strconv.Atoi(info.Query["perPage"])
+		if err != nil {
+			perPage = 10
+		}
+		/*json
 		limit, ok := info.Body["limit"].(int)
 		if !ok {
 			limit = 10
@@ -20,21 +31,21 @@ func Products(app *pocketbase.PocketBase, se *core.ServeEvent) *router.Route[*co
 		offset, ok := info.Body["offset"].(int)
 		if !ok {
 			offset = 0
-		}
+		}*/
 		records, err := app.FindRecordsByFilter(
 			"products",                        // collection
 			"status = {:status}",              // filter
-			"",                                // sort -published
-			limit,                             // limit
-			offset,                            // offset
+			sort,                              // sort -published
+			perPage,                           // limit
+			page,                              // offset
 			dbx.Params{"status": "published"}, // optional filter params
 		)
 		if err != nil {
 			return e.NotFoundError("Missing or invalid slug", err)
 		}
 		response := map[string]any{
-			"pageSize": limit,
-			"page":     offset,
+			"pageSize": perPage,
+			"page":     page,
 			"count":    len(records),
 			"data":     records,
 		}
