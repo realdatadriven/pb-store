@@ -22,9 +22,9 @@ func init() {
 		productsCol.ViewRule = types.Pointer("")
 		productsCol.Fields.Add(
 			&core.BoolField{Name: "active"},
-			&core.SelectField{Name: "status", Values: []string{"draft", "proposed", "published", "rejected"}},
+			&core.SelectField{Name: "status", Values: []string{"draft", "proposed", "published", "rejected"}, Required: true},
 			&core.TextField{Name: "type"},
-			&core.RelationField{Name: "categoryId", CollectionId: categoriesCol.Id, Required: true},
+			&core.RelationField{Name: "categoryId", CollectionId: categoriesCol.Id},
 			&core.TextField{Name: "currency"},
 			&core.TextField{Name: "instructions"},
 			&core.TextField{Name: "description"},
