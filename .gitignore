@@ -11,3 +11,5 @@ pb_data/auxiliary.db
 pb_data/data.db
 pb_data/auxiliary.db
 pb_data/data.db
+*node_modules*
+*.svelte-kit*

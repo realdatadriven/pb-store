@@ -418,6 +418,8 @@ func main() {
 			}
 			return e.Next()
 		})
+		//INIT
+		routes.Init(app, se)
 		// STORES
 		routes.StoresById(app, se)
 		return se.Next()
