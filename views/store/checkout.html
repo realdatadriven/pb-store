@@ -1,0 +1,296 @@
+{{ define "content" }}
+<div class="min-h-screen bg-white">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+		<h1 class="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
+		
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			<!-- Checkout Form -->
+			<div>
+				<form id="checkout-form">
+					<!-- Customer Information -->
+					<div class="mb-8">
+						<h2 class="text-xl font-semibold text-gray-900 mb-4">Customer Information</h2>
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+								<input type="text" id="firstName" name="firstName" required 
+									   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+							</div>
+							<div>
+								<label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+								<input type="text" id="lastName" name="lastName" required 
+									   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+							</div>
+						</div>
+						<div class="mt-4">
+							<label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+							<input type="email" id="email" name="email" required 
+								   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+						</div>
+						<div class="mt-4">
+							<label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+							<input type="tel" id="phone" name="phone" required 
+								   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+						</div>
+					</div>
+
+					<!-- Shipping Address -->
+					<div class="mb-8">
+						<h2 class="text-xl font-semibold text-gray-900 mb-4">Shipping Address</h2>
+						<div class="space-y-4">
+							<div>
+								<label for="address" class="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
+								<input type="text" id="address" name="address" required 
+									   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+							</div>
+							<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+								<div>
+									<label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+									<input type="text" id="city" name="city" required 
+										   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+								</div>
+								<div>
+									<label for="state" class="block text-sm font-medium text-gray-700 mb-2">State/Province</label>
+									<input type="text" id="state" name="state" required 
+										   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+								</div>
+								<div>
+									<label for="zipCode" class="block text-sm font-medium text-gray-700 mb-2">ZIP/Postal Code</label>
+									<input type="text" id="zipCode" name="zipCode" required 
+										   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+								</div>
+							</div>
+							<div>
+								<label for="country" class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+								<select id="country" name="country" required 
+										class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+									<option value="">Select Country</option>
+									<option value="US">United States</option>
+									<option value="CA">Canada</option>
+									<option value="GB">United Kingdom</option>
+									<option value="DE">Germany</option>
+									<option value="FR">France</option>
+									<option value="ES">Spain</option>
+									<option value="IT">Italy</option>
+									<option value="NL">Netherlands</option>
+									<option value="BE">Belgium</option>
+									<option value="AT">Austria</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<!-- Payment Method -->
+					<div class="mb-8">
+						<h2 class="text-xl font-semibold text-gray-900 mb-4">Payment Method</h2>
+						<div class="space-y-4">
+							<div class="flex items-center">
+								<input type="radio" id="credit-card" name="paymentMethod" value="credit-card" checked 
+									   class="h-4 w-4 text-black focus:ring-black border-gray-300">
+								<label for="credit-card" class="ml-3 block text-sm font-medium text-gray-700">
+									Credit Card
+								</label>
+							</div>
+							<div class="flex items-center">
+								<input type="radio" id="paypal" name="paymentMethod" value="paypal" 
+									   class="h-4 w-4 text-black focus:ring-black border-gray-300">
+								<label for="paypal" class="ml-3 block text-sm font-medium text-gray-700">
+									PayPal
+								</label>
+							</div>
+							<div class="flex items-center">
+								<input type="radio" id="bank-transfer" name="paymentMethod" value="bank-transfer" 
+									   class="h-4 w-4 text-black focus:ring-black border-gray-300">
+								<label for="bank-transfer" class="ml-3 block text-sm font-medium text-gray-700">
+									Bank Transfer
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!-- Credit Card Details (shown when credit card is selected) -->
+					<div id="credit-card-details" class="mb-8">
+						<h3 class="text-lg font-medium text-gray-900 mb-4">Card Details</h3>
+						<div class="space-y-4">
+							<div>
+								<label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
+								<input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" 
+									   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+							</div>
+							<div class="grid grid-cols-2 gap-4">
+								<div>
+									<label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
+									<input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" 
+										   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+								</div>
+								<div>
+									<label for="cvv" class="block text-sm font-medium text-gray-700 mb-2">CVV</label>
+									<input type="text" id="cvv" name="cvv" placeholder="123" 
+										   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+								</div>
+							</div>
+							<div>
+								<label for="cardName" class="block text-sm font-medium text-gray-700 mb-2">Name on Card</label>
+								<input type="text" id="cardName" name="cardName" 
+									   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<!-- Order Summary -->
+			<div>
+				<div class="bg-gray-50 rounded-lg p-6 sticky top-8">
+					<h2 class="text-xl font-semibold text-gray-900 mb-4">Order Summary</h2>
+					
+					<div id="checkout-items" class="space-y-4 mb-6">
+						<!-- Items will be populated by JavaScript -->
+					</div>
+
+					<div class="border-t pt-4 space-y-3">
+						<div class="flex justify-between">
+							<span class="text-gray-600">Subtotal</span>
+							<span class="font-medium" id="checkout-subtotal">€0.00</span>
+						</div>
+						<div class="flex justify-between">
+							<span class="text-gray-600">Shipping</span>
+							<span class="font-medium" id="checkout-shipping">€4.95</span>
+						</div>
+						<div class="flex justify-between">
+							<span class="text-gray-600">Tax</span>
+							<span class="font-medium" id="checkout-tax">€0.00</span>
+						</div>
+						<div class="border-t pt-3">
+							<div class="flex justify-between">
+								<span class="text-lg font-semibold text-gray-900">Total</span>
+								<span class="text-lg font-semibold text-gray-900" id="checkout-total">€0.00</span>
+							</div>
+						</div>
+					</div>
+
+					<button type="submit" form="checkout-form" class="w-full bg-black text-white py-3 px-4 rounded-md hover:bg-gray-800 transition-colors">
+						Place Order
+					</button>
+
+					<p class="text-xs text-gray-500 mt-4 text-center">
+						By placing your order, you agree to our Terms of Service and Privacy Policy.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+// Load cart and display checkout summary
+let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+function updateCheckoutSummary() {
+	const checkoutItems = document.getElementById('checkout-items');
+	
+	if (cart.length === 0) {
+		window.location.href = '/cart';
+		return;
+	}
+
+	let html = '';
+	let subtotal = 0;
+	
+	cart.forEach(item => {
+		const itemTotal = item.price * item.quantity;
+		subtotal += itemTotal;
+		
+		html += `
+			<div class="flex items-center space-x-4">
+				<div class="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+					${item.image ? 
+						`<img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">` :
+						`<div class="w-full h-full flex items-center justify-center text-gray-400">
+							<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+							</svg>
+						</div>`
+					}
+				</div>
+				<div class="flex-1">
+					<h3 class="text-sm font-medium text-gray-900">${item.title}</h3>
+					<p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+				</div>
+				<div class="text-sm font-medium text-gray-900">
+					${item.currency || '€'}${itemTotal.toFixed(2)}
+				</div>
+			</div>
+		`;
+	});
+	
+	checkoutItems.innerHTML = html;
+	
+	// Calculate totals
+	const shipping = subtotal > 50 ? 0 : 4.95;
+	const tax = subtotal * 0.21; // 21% VAT
+	const total = subtotal + shipping + tax;
+	
+	document.getElementById('checkout-subtotal').textContent = `€${subtotal.toFixed(2)}`;
+	document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Free' : `€${shipping.toFixed(2)}`;
+	document.getElementById('checkout-tax').textContent = `€${tax.toFixed(2)}`;
+	document.getElementById('checkout-total').textContent = `€${total.toFixed(2)}`;
+}
+
+// Handle form submission
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+	e.preventDefault();
+	
+	// Collect form data
+	const formData = new FormData(this);
+	const orderData = {
+		customer: {
+			firstName: formData.get('firstName'),
+			lastName: formData.get('lastName'),
+			email: formData.get('email'),
+			phone: formData.get('phone')
+		},
+		shipping: {
+			address: formData.get('address'),
+			city: formData.get('city'),
+			state: formData.get('state'),
+			zipCode: formData.get('zipCode'),
+			country: formData.get('country')
+		},
+		payment: {
+			method: formData.get('paymentMethod'),
+			cardNumber: formData.get('cardNumber'),
+			expiryDate: formData.get('expiryDate'),
+			cvv: formData.get('cvv'),
+			cardName: formData.get('cardName')
+		},
+		items: cart,
+		total: document.getElementById('checkout-total').textContent
+	};
+	
+	// Simulate order processing
+	alert('Order placed successfully! Thank you for your purchase.');
+	
+	// Clear cart and redirect
+	localStorage.removeItem('cart');
+	window.location.href = '/order-confirmation';
+});
+
+// Handle payment method changes
+document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+	radio.addEventListener('change', function() {
+		const creditCardDetails = document.getElementById('credit-card-details');
+		if (this.value === 'credit-card') {
+			creditCardDetails.style.display = 'block';
+		} else {
+			creditCardDetails.style.display = 'none';
+		}
+	});
+});
+
+// Initialize checkout
+updateCheckoutSummary();
+</script>
+{{ end }}
+{{ template "store" . }}
+
